@@ -4,8 +4,11 @@
 QMC5883LCompass magnetometro;
 
 // Constantes
-const int ledPin = 7; // Pin al que está conectado el LED 
-const int umbral = 25; // Umbral de calibración para eliminar ruido
+const int LEDPIN = 7; // Pin al que está conectado el LED 
+const int UMBRALPISO = 25; // UMBRAL a superar por las lecturas
+const int UMBRALTECHO = 400; // UMBRAL que no deben superar las lecturas
+const int BUZZERPIN = 12; // Pin al que está conectado el buzzer
+const int BAUD = 9600; // bits por segundo para la comunicación serial
 
 // Variables
 int xOffset = 0;
@@ -13,11 +16,16 @@ int yOffset = 0;
 int zOffset = 0;
 bool estaCalibrado = false;
 
+// Funciones
+void controlarSalida(int x, int y, int z);
+
 void setup() {
   // Inicializamos el pin del LED como salida
-  pinMode(ledPin, OUTPUT);
+  pinMode(LEDPIN, OUTPUT);
+  // Inicializamos el pin del buzzer como salida
+  pinMode(BUZZERPIN, OUTPUT);
   // Inicializamos la comunicación serie
-  Serial.begin(9600);
+  Serial.begin(BAUD);
   // Inicializamos el magnetómetro
   magnetometro.init();
 }
@@ -46,10 +54,10 @@ void loop() {
   y -= yOffset;
   z -= zOffset;
 
-  // Aplicamos el umbral de calibración para eliminar ruido
-  x = (abs(x) < umbral) ? 0 : x;
-  y = (abs(y) < umbral) ? 0 : y;
-  z = (abs(z) < umbral) ? 0 : z;
+  // Aplicamos el UMBRAL de calibración para eliminar ruido
+  x = (abs(x) < UMBRALPISO) ? 0 : x;
+  y = (abs(y) < UMBRALPISO) ? 0 : y;
+  z = (abs(z) < UMBRALPISO) ? 0 : z;
 
   // Mostramos los valores de la lectura por el puerto serial
   Serial.print("X: ");
@@ -59,13 +67,25 @@ void loop() {
   Serial.print(" Z: ");
   Serial.print(z);
   Serial.println();
-  
-  // Si el valor absoluto de z es mayor que el umbral, encendemos el LED
-  if (abs(x) > umbral || abs(y) > umbral || abs(z) > umbral) {
-    digitalWrite(ledPin, HIGH);
-  } else {
-    digitalWrite(ledPin, LOW);
+
+  controlarSalida(x, y, z);
+
+  // Vuelve a calibrar si se mueve
+  if(abs(x) > UMBRALTECHO || abs(y) > UMBRALTECHO || abs(z) > UMBRALTECHO){
+    estaCalibrado = false;    
   }
 
   delay(250);
+}
+
+// Definir funciones 
+void controlarSalida(int x, int y, int z){
+  // Si el valor absoluto de z es mayor que el UMBRAL, encendemos el LED
+  if (((abs(x) > UMBRALPISO) && (abs(x) < UMBRALTECHO)) || ((abs(y) > UMBRALPISO) && (abs(y) < UMBRALTECHO)) || ((abs(z) > UMBRALPISO) && (abs(z) < UMBRALTECHO))) {
+    digitalWrite(LEDPIN, HIGH);
+    digitalWrite(BUZZERPIN, HIGH);
+  } else {
+    digitalWrite(LEDPIN, LOW);
+    digitalWrite(BUZZERPIN, HIGH);
+  }
 }
