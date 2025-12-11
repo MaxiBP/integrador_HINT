@@ -1,6 +1,7 @@
 # integrador_HINT
-Vamos equipo
+## Metal Detector 
 
-La carpeta "integrador_HINT" que descargaron pueden moverla a la siguiente ruta para que quede mas ordenado y bonito y todos tengamos lo mismo: equipo/documentos/arduino/proyectos.   (La carpeta proyectos tienen que crearla).
+This project was developed in the course HINT (Herramientas Informáticas y Nuevas Tecnologías), part of the Physics degree Program, which i took to complement my learning in Arduino, C, and Python.
+Using and Arduino Uno board together with the QMC5883L compass module, the code functions as a simple metal detector. It represents the first stage of a larger project aimed at detecting magnetic ink used in bees to locate the queen.
 
-El contenido de la carpeta "libraries" peguenlo en su carpeta libraries,si es como en mi pc y tienen windows tienen que ir a equipo/documentos/arduino/libraries.
+As mentioned, the project was developed by physics students and myself, at a time when I did not yet have experience with proper commit practices or project structuring. Even so, I still find this project fun to revisit and experiment with, and it has the potential to continue evolving, so it could be considered unfinished.
